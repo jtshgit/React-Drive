@@ -1,0 +1,298 @@
+.accordion-body{
+  padding: 0.25rem 0rem 0.25rem 1.5rem;
+}
+.accordion-body p{
+  font-size: 12px;
+  padding-left: 10px;
+}
+.accordion-item{
+  border: none;
+}
+.accordion-button:not(.collapsed) {
+  color: #426442;
+  background-color: #ffffff;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .125);
+}
+.accordion-button:focus {
+  z-index: 3;
+  outline: 0;
+  box-shadow: 0 0 0 0;
+}
+.accordion-button{
+  padding: 0.60rem 0.75rem;
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+}
+.accordion-file-button::after{
+  height: 0;;
+}
+.folder-icon a{
+  text-decoration: none;
+  color: black;
+}
+.folder-icon a div{
+  display: grid;
+}
+.folder-icon a div img{
+  width: 50px;
+              height: 50px;
+              object-fit: contain;
+}
+.folder-icon{
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 5px;
+  align-items: center;
+  align-content: center;
+  align-self: center;
+  justify-content: center;
+}
+.folder-icon:hover{
+  background-color: rgb(234, 251, 255);
+}
+.folder-icon a div span {
+width: 50px;
+font-size: 11px;
+margin-top: 7px;
+overflow: hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
+}
+.no_file_here{
+  margin-top: calc(30% - 120px);
+  color: rgb(190, 190, 190);
+  
+}
+.no_file_here img{
+  width: 50px;
+  opacity: 20%;
+  margin-bottom: 20px;
+}
+.breadcrumb_nav {
+  --bs-breadcrumb-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E");
+  margin: 15px 0 0 35px;
+}
+.breadcrumbs a{
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+.breadcrumbs span{
+  padding-left: 10px;
+}
+.breadcrumbs a:hover{
+  background: #e1e1e1;
+}
+.breadcrumbs{
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* file-upload */
+/* body{
+  padding: 10px;
+  background: #0086fe;
+} */
+/* .upload-box >p{
+  text-align: center;
+  font-weight: 500;
+  margin-top: 10px;
+}
+img{
+  width: 100%;
+}
+
+.icon{
+  width: 80px;
+  height: 80px;
+}
+.upload-box{
+  width: 100%;
+  background: #ffffff;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 7px 7px 12px rgba(0, 0, 0, 0.05);
+}
+.upload-box form{
+  height: 170px;
+  display: flex;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 5px;
+  border: 2px dashed #0086fe;
+}
+form:where(i,p){
+  color: #0086fe;
+}
+form i{
+  font-size: 50px;
+}
+form p{
+  margin-top: 15px;
+  font-size: 16px;
+}
+section .row{
+  margin-bottom: 10px;
+  background: #d5ebff;
+  list-style: none;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+section .row i{
+  color: #0086fe;
+  font-size: 30px;
+}
+section .details span{
+  font-size: 12px;
+}
+.loading-area .row .content{
+  width: 100%;
+  margin-left: 15px;
+}
+.loading-area .details{
+  display: flex;
+  align-items: center;
+  margin-bottom: 7px;
+  justify-content: space-between;
+}
+.loading-area .content .loading-bar{
+  height: 10px;
+  width: 100%;
+  margin-bottom: 4px;
+  background: #411818;
+  border-radius: 30px;
+}
+.content .loading-bar .loading{
+  transition: all 0.1s ease;
+  height: 100%;
+  width: 90%;
+  background: #0086fe;
+  border-radius: inherit;
+}
+.uploaded-area{
+overflow-y: scroll;
+}
+.uploaded-area .onprogress{
+max-height: 150px;
+}
+.uploaded-area::-webkit-scrollbar{
+width: 0px;
+}
+.uploaded-area .row .content{
+  display: flex;
+  align-items: center;
+}
+.uploaded-area .row .details{
+display:flex;
+ margin-left: 15px;
+flex-direction: column;
+}
+.uploaded-area .row .details .size{
+  color: #404040;
+  font-size: 11px;
+}
+.uploaded-area i.fa-check{
+  font-size: 16px;
+}
+.upload-box.dragging {
+  border-color: #00cc00;
+  background-color: #111611;
+}
+
+.App {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  position: relative;
+}
+
+.draggable-box {
+  width: 200px;
+  height: 200px;
+  background-color: #ffcc00;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed #333;
+  position: relative;
+  transition: background-color 0.3s;
+}
+
+.draggable-box.active {
+  background-color: #ff9900;
+}
+
+.draggable-box.active .plus-sign {
+  position: absolute;
+  font-size: 3em;
+  color: #fff;
+}
+
+.App.dragging {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.App.dragging .drop-here {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  color: #fff;
+  pointer-events: none;
+} */
