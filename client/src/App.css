@@ -71,7 +71,8 @@ text-overflow: ellipsis;
 }
 .breadcrumb_nav {
   --bs-breadcrumb-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E");
-  margin: 15px 0 0 35px;
+  margin-top: 15px;
+  margin-left: calc(5% - 10px);
 }
 .breadcrumbs a{
   text-decoration: none;
@@ -89,16 +90,251 @@ text-overflow: ellipsis;
   width: 100%;
   overflow-x: auto;
 }
+.toolbar{
+  height: 40px;
+  width: 90%; 
+  margin: 0px auto;
+  background-color: #f3f2f2;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+}
+.toolbar .dropdown-menu{
+  border-radius: 7px;font-size: 14px;
+}
+.vertical {
+  border-left: 1px solid #e0e0e0;
+  height: 28px;
+  margin: auto 10px;
+}
+.button-4 {
+  background-color: #FAFBFC;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  border-radius: 16px;
+  box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  box-sizing: border-box;
+  color: #24292E;
+  cursor: pointer;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  padding: 5px 8px;
+  transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+  margin-left: 5px;
+ 
+}
+
+.button-4:hover {
+  background-color: #F3F4F6;
+  text-decoration: none;
+  transition-duration: 0.1s;
+}
+
+.button-4:disabled {
+  background-color: #FAFBFC;
+  border-color: rgba(27, 31, 35, 0.15);
+  color: #959DA5;
+  cursor: default;
+}
+
+.button-4:active {
+  background-color: #EDEFF2;
+  box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
+  transition: none 0s;
+}
+
+.button-4:focus {
+  outline: 1px transparent;
+}
+
+.button-4:before {
+  display: none;
+}
+
+.button-4:-webkit-details-marker {
+  display: none;
+}
 
 
 
 
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 
 
+.note-container{
+  width: 90%;
+  margin: 10px auto;
+  font-family: "Poppins", sans-serif;
+  
+}
+.note-box{
+  display: inline-block;
+  margin: 5px;
+  width: 300px;
+  height: 270px;
+  background-color: #fffafa;
+  padding: 3px;
+  border-radius: 22px;
+  transition: all 0.2s ease;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+}
+.note-box::before {
+  content: "";
+  display: block; /* Aspect ratio: height/width * 100% */
+}
+@media (max-width: 500px) {
+  .note-box {
+    margin: 10px 0 0 0;
+      width: 100%;
+      height: auto;
+  }
+}
+@media (max-width: 766px) {
+  .note-container{
+    text-align: center;
+  }
+}
+.note-box:hover{
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 5px 4px;
+}
 
+.note-box .thumbnail{
+  width: calc(100%);
+  height: calc(60%);
+  border-radius: 20px 20px 0px 0px;
+}
+.note-box .middle{
+  display: flex;
+  padding: 1px;
+  border-bottom: 1px solid rgb(225, 225, 225);
+}
+.note-box .middle .view{
+  padding: 5px 0px;
+  min-width: 50px;
+  align-items: center;
 
+  margin-top: -5px;
+}
+.note-box .middle .view span{
+  padding: 0;
+  font-size: 10px;
+  line-height: 12px;
+  color: #9ca2a8;
+}
+.note-box .middle .view img{
+
+  margin-bottom: -10px;
+
+  height: 18px;
+}
+.note-box .middle .note-name{
+  text-align: left;
+  margin: 5px 10px 5px 2px;
+  display: -webkit-box;
+  font-weight: 500;
+  font-size: 14px;
+  -webkit-box-orient: vertical;
+  color: #474747;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 50px; /* 1.8em (line height) * 2 lines */
+  line-height: 22px;
+}
+
+.note-box .lower{
+  text-align: left;
+  padding: 0;
+  height: 49px;
+  display: flex;
+  align-items: center;
+  width: calc(100% - 30px);
+
+}
+.note-box .lower .userP{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-left: 10px;
+}
+.note-box .lower .naming{
+  height: 34px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+.note-box .lower .naming h4{
+  font-size: 13px;
+  margin-bottom: 0;
+  line-height: 1;
+  margin-top: 5px;
+  padding: 0;
+}
+
+.note-box .lower .naming span{
+  margin-top: -10;
+  font-size: 9px;
+  font-weight: 200;
+  color: #5c5c5c;
+  margin-top: 4px;
+
+  line-height: 1;
+}
+.note-box .lowerDet{
+  display: flex;
+}
+.note-box .lowerDet .option{
+  margin: 10px 5px;
+  float: right;
+  width: 30px;
+  width: 30px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+
+}
+.note-box .lowerDet .option img{
+  height: 30px;
+}
+.note-box .lowerDet .option:hover{
+background-color: #dcdada;
+}
+.note-box .lowerDet .option:active{
+  background-color: #adadad;
+  }
+/* .note-box .note-name {
+  max-height: 50px;
+  overflow: hidden;
+  position: relative;
+   /* Adjust based on your font size and desired line height 
+}
+
+.note-box .note-name::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 1.2em;
+  background: linear-gradient(to bottom, transparent, white);
+}
+
+.note-box .note-name::after {
+  content: '...';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  padding-left: 0.2em;
+} */
 
 
 

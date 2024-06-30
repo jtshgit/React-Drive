@@ -3,6 +3,7 @@ import {Routes, Route } from "react-router-dom";
 import FileMap from "./FileMap";
 import Folder from "./Folder";
 import axios from "axios";
+// import Signup from "./Signup";
 
 export default function DriveBody() {
   const [prmid, setId] = useState(null);
@@ -17,7 +18,7 @@ export default function DriveBody() {
   const [loading, setLoading] = useState(true);
   const handleAddition = async () => {
     try {
-      const response = await axios.post("http://localhost:5001/fetch", {
+      const response = await axios.post(process.env.REACT_APP_API_URL+"/fetch", {
         parent: null,
       });
       if (response.data.success) {
@@ -38,6 +39,7 @@ export default function DriveBody() {
   }, []);
 
   return (
+    
     <div style={{ display: "flex", height: "calc(100vh - 4rem)" }}>
       {window.innerWidth > 768?  (<div
         style={{
@@ -56,6 +58,7 @@ export default function DriveBody() {
             :  { width: "80%", height: "100%", overflowY: "auto" }
         }
       >
+        {process.env.ACCOUNT_APP_URL}
         {loading ? (
           <p>loading...</p>
         ) : (

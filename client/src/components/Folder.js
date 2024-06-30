@@ -17,31 +17,25 @@ const Folder = ({ data }) => {
   let organizeData;
   let organizedData;
   if(self){
-   organizeData = (data, selfID) => {
+   organizeData = (data, child) => {
     data.forEach((item) => {
-      if(item._id === selfID.parent){
+      if(item._id === child.parent){
         map.unshift(item);
+        organizeData(data,item)
       }
     });
-    // data.forEach((item) => {
-    //   if (item.parent && map[item.parent]) {
-    //     map[item.parent].children.push(map[item._id]);
-    //   }
-    // });
-
     return Object.values(map);
   }
   organizedData = organizeData(data,self);
 }
 console.log(organizedData);
-  
   return (
     <div>
 <section className="breadcrumbs">
   <nav className="breadcrumb_nav" aria-label="breadcrumb">
   <ol className="breadcrumb">
       {self? (organizedData.map((item) => (
-        <li className="breadcrumb-item"><Link to={`/folder/${item._id}`}>{item.name}</Link></li>
+        <li key={item._id} className="breadcrumb-item"><Link to={`/folder/${item._id}`}>{item.name}</Link></li>
         )))
 
         :""}

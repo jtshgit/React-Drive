@@ -1,12 +1,46 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { getProtected, logout } from './AuthService';
+import Toast, { Toaster } from 'react-hot-toast';
+
 
 export default function Navbar() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await getProtected();
+        if(response.data.success){
+          setIsAuthenticated(true);
+        }
+        
+      } catch (error) {
+        setIsAuthenticated(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await Toast.promise(
+        logout(),
+       { 
+         loading: 'Loging Out...', // Optional loading message
+         success: 'Done!',
+         error: 'Something went Wrong',
+       }
+     );
+    } catch (error) {
+      Toast.error("Something went Wrong");
+    }
+};
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
-          Tradly
+          <img alt="Tradly.in" style={{marginLeft: "10%"}} height={"13px"} src={process.env.PUBLIC_URL + "/tradly-2.png"}/>
         </Link>
         <button
           className="navbar-toggler"
@@ -22,7 +56,7 @@ export default function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/folder/667564e7fe3309ddfc199eee">
+              <Link className="nav-link active" aria-current="page" to="/myfolder/">
                 Drive
               </Link>
             </li>
@@ -37,7 +71,12 @@ export default function Navbar() {
               </Link>
             </li> */}
           </ul>
-          <form className="d-flex">
+          <div>
+          
+      {!isAuthenticated && <a href={"http://localhost:3001/login"} className="btn btn-primary">Login</a>}
+      {isAuthenticated && <button className="btn btn-danger" onClick={handleLogout}>Logout</button>}
+    </div>
+          {/* <form className="d-flex">
             <input
               className="form-control me-2"
               type="search"
@@ -47,9 +86,13 @@ export default function Navbar() {
             <button className="btn btn-outline-success" type="submit">
               Search
             </button>
-          </form>
+          </form> */}
         </div>
       </div>
+      <div><Toaster
+                position="top-center"
+                reverseOrder={false}
+            /></div>
     </nav>
   );
 }
