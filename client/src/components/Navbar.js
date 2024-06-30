@@ -40,7 +40,7 @@ export default function Navbar() {
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
-          <img alt="Tradly.in" style={{marginLeft: "10%"}} height={"13px"} src={process.env.PUBLIC_URL + "/tradly-2.png"}/>
+          <img alt="Tradly.in" style={{marginLeft: "10%"}} height={"13px"} src={process.env.REACT_APP_PUBLIC_URL + "/tradly-2.png"}/>
         </Link>
         <button
           className="navbar-toggler"
@@ -73,7 +73,7 @@ export default function Navbar() {
           </ul>
           <div>
           
-      {!isAuthenticated && <a href={"http://localhost:3001/login"} className="btn btn-primary">Login</a>}
+      {!isAuthenticated && <a href={process.env.REACT_APP_ACCOUNT_APP_URL +"/login"} className="btn btn-primary">Login</a>}
       {isAuthenticated && <button className="btn btn-danger" onClick={handleLogout}>Logout</button>}
     </div>
           {/* <form className="d-flex">
