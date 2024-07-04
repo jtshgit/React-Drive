@@ -73,7 +73,7 @@ export default function Navbar() {
           </ul>
           <div>
           
-      {!isAuthenticated && <a href={process.env.REACT_APP_ACCOUNT_APP_URL +"/login"} className="btn btn-primary">Login</a>}
+      {!isAuthenticated && <a href={process.env.REACT_APP_ACCOUNT_APP_URL +"/login"} className="button-2" style={{marginRight: "15px",backgroundColor: "rgba(51, 51, 51, 0.05)"}}>Login</a>}
       {isAuthenticated && <button className="btn btn-danger" onClick={handleLogout}>Logout</button>}
     </div>
           {/* <form className="d-flex">

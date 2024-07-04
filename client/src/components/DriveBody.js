@@ -6,26 +6,19 @@ import axios from "axios";
 // import Signup from "./Signup";
 
 export default function DriveBody() {
-  const [prmid, setId] = useState(null);
-  useEffect(() => {
+
     const path = window.location.pathname;
     const segments = path.split("/");
     const id = segments[2];
-    setId(id);
-  }, []);
-  // console.log(prmid)
   const [data, setData] = useState(true);
   const [loading, setLoading] = useState(true);
   const handleAddition = async () => {
     try {
       const response = await axios.post(process.env.REACT_APP_API_URL+"/fetch", {
-        parent: null,
+        parent: id,
       });
       if (response.data.success) {
-        setData(response.data.struct);
-        // setChildFiles(response.data.struct.filter(child => child.parent === id));
-        // setSelf(response.data.struct.find(item => item._id === id));
-        //  console.log(childFiles)
+        setData(response.data);
       }
     } catch (error) {
       console.log(error);
@@ -48,7 +41,14 @@ export default function DriveBody() {
           borderRight: "1px solid #f0f0f0",
         }}
       >
-        {loading ? <p>loading...</p> : <FileMap data={data} prmid={prmid} />}
+        {loading ? <p>loading...</p> : 
+        
+        <Routes>
+        <Route path="/:id" element={<FileMap data={data} prmid={id} />} />
+        <Route path="/" element={<FileMap data={data} prmid={id} />} />
+      </Routes>
+        
+        }
       </div>):""}
       
       <div

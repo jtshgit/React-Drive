@@ -20,17 +20,17 @@ const port = 5001;
 dotenv.config();
 app.use(cookieParser());
 app.use(bodyParser.json());
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
+const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -69,17 +69,17 @@ app.post('/register', async (req, res) => {
         };
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                return res.status(400).json({success: false, error: "Error occurred" });
+                return res.status(400).json({ success: false, error: "Error occurred" });
             }
         });
         const newUser = new User({ name, email: email.toLowerCase(), password: hashedPassword, otp });
         await newUser.save();
         // const token = jwt.sign({ id: newUser._id.toString() }, process.env.JWT_SECRET, { expiresIn: '1h' });
         // res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax' });
-        res.status(201).json({success: true, message: '1' });
+        res.status(201).json({ success: true, message: '1' });
     } catch (error) {
         console.error('Error during registration:', error);
-        res.status(400).json({success: false, error: error.message });
+        res.status(400).json({ success: false, error: error.message });
     }
 });
 // otpcheck
@@ -88,19 +88,19 @@ app.post('/otpcheck', async (req, res) => {
     try {
 
         const user = await User.findOne({ email: email.toLowerCase() });
-        if (!user) return res.status(400).json({success: false, error: 'Invalid username or password' });
+        if (!user) return res.status(400).json({ success: false, error: 'Invalid username or password' });
         // console.log(otp + user.otp)
         if (otp === user.otp) {
             const token = jwt.sign({ id: user._id.toString(), name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
             res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax' });
-            res.json({success: true, message: 'Login successful', token });
+            res.json({ success: true, message: 'Login successful', token });
         } else {
-            return res.status(400).json({success: false, error: 'Invalid username or password' });
+            return res.status(400).json({ success: false, error: 'Invalid username or password' });
 
         }
     } catch (error) {
         console.error('Error during Checking OTP:', error);
-        res.status(400).json({success: false, error: error.message });
+        res.status(400).json({ success: false, error: error.message });
     }
 });
 
@@ -108,16 +108,16 @@ app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email: email.toLowerCase() });
-        if (!user) return res.status(400).json({success: false, error: 'Invalid username or password' });
+        if (!user) return res.status(400).json({ success: false, error: 'Invalid username or password' });
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({success: false, error: 'Invalid username or password' });
+        if (!isMatch) return res.status(400).json({ success: false, error: 'Invalid username or password' });
         const token = jwt.sign({ id: user._id.toString(), name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax' });
-        res.json({ success: true,message: 'Login successful', token });
+        res.json({ success: true, message: 'Login successful', token });
     } catch (error) {
         console.error('Error during login:', error);
-        res.status(400).json({success: false, error: error.message });
+        res.status(400).json({ success: false, error: error.message });
     }
 });
 
@@ -161,25 +161,23 @@ app.post('/logout', (req, res) => {
 
 app.get('/protected', (req, res) => {
     const token = req.cookies.token;
-    if (!token){
-        return res.json({success: false, error: 'Unauthorized',auth: false });
+    if (!token) {
+        return res.json({ success: false, error: 'Unauthorized', auth: false });
     }
     try {
         // console.log("hi")
         const verified = jwt.verify(token, process.env.JWT_SECRET);
-        res.json({ success: true,message: 'Protected content', user: verified });
+        res.json({ success: true, message: 'Protected content', user: verified });
     } catch (error) {
-        res.json({success: false, error: 'Unauthorized',auth: false });
+        res.json({ success: false, error: 'Unauthorized', auth: false });
     }
 });
 
 // const router = express.Router();
 app.post('/fetchMyDrive', fileController.getNotes);
 app.post('/createNotes', fileController.createNote);
-
-
-
-
+app.post('/createfolderinnote', fileController.createFolderInNote);
+app.post('/fetch', fileController.fetchFiles);
 
 
 
@@ -211,11 +209,7 @@ const blobServiceClient1 = new BlobServiceClient(
 
 
 
-app.post('/fetch', async (req, res) => {
-    const allfiles = await File.find();
-    res.json({ success: true, struct: allfiles });
-    console.log("sent")
-});
+
 
 const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
 const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;

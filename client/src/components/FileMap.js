@@ -1,5 +1,5 @@
 import React from "react";
-import {Link ,useNavigate} from 'react-router-dom';
+import {useParams, Link ,useNavigate} from 'react-router-dom';
 const folderIcon = process.env.PUBLIC_URL + "/folder.svg";
 const fileIcon = process.env.PUBLIC_URL + "../logo192.png";
 
@@ -7,7 +7,7 @@ const Accordion = ({ items, parentId }) => {
   const navigate = useNavigate();
   const handleFolderClick = (e) => {
     const dataId = e.target.getAttribute('data-id');
-    navigate('/folder/'+dataId)
+    navigate('/note/'+dataId)
 };
   return (
     <div className="accordion" id={`accordionExample${parentId}`}>
@@ -61,11 +61,9 @@ const Accordion = ({ items, parentId }) => {
 };
 
 const FileMap = ({ data, prmid}) => {
-  // Function to organize items by parent ID
-//   if(!data){
-//     return "<h></h>"
-//   }
-// console.log(prmid)
+  const id = useParams();
+  const folderId = data.note;
+
   const organizeData = (data) => {
     const map = {};
     data.forEach((item) => {
@@ -76,12 +74,9 @@ const FileMap = ({ data, prmid}) => {
         map[item.parent].children.push(map[item._id]);
       }
     });
-
-    return Object.values(map).filter((item) => !item.parent);
+    return Object.values(map).filter((item) => (item.parent === folderId));
   };
-
-  const organizedData = organizeData(data);
-  // console.log(organizedData)
+  const organizedData = organizeData(data.struct);
   return (
     <div>
       <Accordion items={organizedData} parentId="Root" />

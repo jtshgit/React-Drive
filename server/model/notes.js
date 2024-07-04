@@ -4,6 +4,7 @@ const fileSchema = new mongoose.Schema({
     name: String,
     userId: String, // 'file' or 'folder'
     userName: String,
+    path: String,
     userP:{
         type: String,
         default: "../user.jpeg"

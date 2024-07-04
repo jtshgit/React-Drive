@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import FileMap from "./FileMap";
+import FileMap from "./MyFileMap";
 import MyFolder from "./MyFolder";
 import axios from "axios";
 // import Signup from "./Signup";
+import SayLogin from "./comps/SayLogin";
+import MyNote from "./MyNote";
 
 export default function MyDrive() {
-    const [prmid, setId] = useState(null);
-    useEffect(() => {
-        const path = window.location.pathname;
-        const segments = path.split("/");
-        const id = segments[2];
-        setId(id);
-    }, []);
     // console.log(prmid)
     const [data, setData] = useState(true);
     const [loading, setLoading] = useState(true);
@@ -21,9 +16,8 @@ export default function MyDrive() {
             const response = await axios.post(process.env.REACT_APP_API_URL + "/fetchMyDrive", {
                 parent: null,
             },{ withCredentials: true });
-            if (response.data.success) {
                 setData(response.data);
-            }
+
         } catch (error) {
             console.log("done");
         } finally {
@@ -36,7 +30,9 @@ export default function MyDrive() {
     }, []);
 
     return (
-        <div style={{ display: "flex", height: "calc(100vh - 4rem)" }}>
+        <>
+
+        {data.auth?(<div style={{ display: "flex", height: "calc(100vh - 4rem)" }}>
             {window.innerWidth > 768 ? (<div
                 style={{
                     width: "20%",
@@ -44,7 +40,14 @@ export default function MyDrive() {
                     borderRight: "1px solid #f0f0f0",
                 }}
             >
-                {/* {loading ? <p>loading...</p> : <FileMap data={data} prmid={prmid} />} */}
+                {loading ? <p>loading...</p> : (
+                    <Routes>
+                    {/* <Route path="/" element={<FileMap data={data}/>} /> */}
+                    <Route path="/" element={<FileMap data={data}/>} />
+                    <Route path="/note/:id" element={<FileMap data={data}/>} />
+                </Routes>
+                    
+                    )}
             </div>) : ""}
             <div
                 style={
@@ -60,9 +63,13 @@ export default function MyDrive() {
                     <Routes>
                         <Route path="/:id" element={<MyFolder data={data} />} />
                         <Route path="/" element={<MyFolder data={data} />} />
+                        <Route path="/note/:id" element={<MyNote/>} />
                     </Routes>
                 )}
             </div>
-        </div>
+        </div>):(
+                <SayLogin/>
+            )}
+        </>
     );
 }

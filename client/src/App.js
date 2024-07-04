@@ -10,6 +10,8 @@ import {
 import DriveBody from './components/DriveBody';
 import Signup from './components/Signup';
 import MyDrive from './components/MyDrive';
+import MyFolder from './components/MyFolder';
+import Notes from './components/Notes';
 
 const Subtract = lazy(() => import('./components/Subtract'));
 
@@ -25,11 +27,12 @@ function App() {
       <Navbar />
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
-        <Route path="/signup" element={<Signup />}/>
-          <Route path="/folder/*" element={<DriveBody />} />
-          <Route path="/myfolder/*" element={<MyDrive />} />
+        {/* <Route path="/signup" element={<Signup />}/> */}
+          {/* <Route path="/folder/*" element={<DriveBody />} /> */}
+          {/* <Route path="/myfolder/*" element={<MyDrive />} /> */}
           {/* <Route path="/login" element={<Login />} /> */}
-          <Route path="/sub" element={<Subtract />} />
+          <Route path="/note" element={<Notes />} />
+          <Route path="/note/*" element={<DriveBody />}/>
         </Routes>
       </Suspense>
     </Router>

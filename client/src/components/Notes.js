@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { createFolder } from './server/ServerService';
+import React, { useEffect, useState } from "react";
+import { Routes, Route, Link } from "react-router-dom";
+import axios from "axios";
 import Toast from 'react-hot-toast';
 import SayLogin from "./comps/SayLogin";
-// const folderIcon = process.env.PUBLIC_URL + "../folder.svg";
-// const fileIcon = process.env.PUBLIC_URL + "../logo192.png";
+import { createFolder } from './server/ServerService';
 
-const MyFolder = ({ data }) => {
+
+export default function Notes() {
+    const [data, setData] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [name, setName] = useState('');
+
     const creatNotes = async () => {
         try {
             const response = await Toast.promise(
@@ -27,51 +30,29 @@ const MyFolder = ({ data }) => {
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return date.toLocaleDateString('en-GB', options);
     };
-    console.log(data);
-    //   const id = useParams();
-    //   let childFiles;
-    //   if (id.id) {
-    //     childFiles = data.filter((child) => child.parent === id.id);
-    //   } else {
-    //     childFiles = data.filter((child) => child.parent === null);
-    //   }
-    //   let self = data.find(item => item._id === id.id);
-    //   const map = [];
-    // map.push(self);
-    //   let organizeData;
-    //   let organizedData;
-    //   if(self){
-    //    organizeData = (data, child) => {
-    //     data.forEach((item) => {
-    //       if(item._id === child.parent){
-    //         map.unshift(item);
-    //         organizeData(data,item)
-    //       }
-    //     });
-    //     return Object.values(map);
-    //   }
-    //   organizedData = organizeData(data,self);
-    // }
-    // console.log(organizedData);
-
+    const handleAddition = async () => {
+        try {
+            const response = await axios.post(process.env.REACT_APP_API_URL + "/fetchMyDrive", {
+                parent: null,
+            }, { withCredentials: true });
+            setData(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.log("done");
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        handleAddition();
+    }, []);
     return (
         <div>
-            <section className="breadcrumbs">
-                <nav className="breadcrumb_nav" aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                        <li className="breadcrumb-item"><Link to={`/myfolder/`}><img height={"25px"} src="../logo192.png" alt="Tradly.in" /></Link></li>
-                        <li className="breadcrumb-item"><Link to={`/myfolder/`}>Drive</Link></li>
-                        {/* {self? (organizedData.map((item) => (
-        <li key={item._id} className="breadcrumb-item"><Link to={`/folder/${item._id}`}>{item.name}</Link></li>
-        )))
-
-        :""} */}
-
-                        {/* {self? (<li className="breadcrumb-item active" aria-current="page"><span>{self.name}</span></li>):""} */}
-                    </ol> </nav>
-
-            </section>
-           {data.auth?(<section>
+            {loading ? (<><div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div></>) : (data.auth?(<section>
             <div className="toolbar">
                 <div className="dropdown">
                     <button className="button-4 " data-bs-toggle="dropdown" aria-expanded="false"><img alt="Tradly.in" src="../add_circle.svg" height={"15px"} /> Add
@@ -104,7 +85,7 @@ const MyFolder = ({ data }) => {
             </div>
             <div className="note-container">
                     {(data.struct.map((item) => (
-                        <Link to={"./note/"+item._id} key={item._id} className="note-box">
+                        <Link to={"./"+item.path} key={item._id} className="note-box">
                             <img className="thumbnail" src={item.image} />
                             <div className="middle">
                                 <center className="view">
@@ -133,53 +114,7 @@ const MyFolder = ({ data }) => {
                 </div>
             </section>):(
                 <SayLogin/>
-            )}
-            {/* {self? (childFiles.length === 0? <center className="no_file_here"><img src={folderIcon} alt="abc"/><h4>No file here</h4></center>:""):<center className="no_file_here"><img src={folderIcon} alt=""/><h4>Not Exist</h4></center>} */}
-            {/* <ul style={{ marginTop: "3px" }}>
-        {childFiles.map((file) => (
-          <center key={file._id} className="folder-icon">
-            <Link to={"/folder/" + file._id}>
-              <div>
-                <img
-                  src={file.type === "folder" ? folderIcon : fileIcon}
-                  alt="abc"
-                />
-                <span>{file.name}</span>
-              </div>
-            </Link>
-          </center>
-        ))}
-      </ul> */}
-            {/* <FileUpload/> */}
-            {/* <FileGet/> */}
+            ))}
         </div>
-    );
-};
-
-export default MyFolder;
-
-
-
-/* <center className="folder-icon" data-name="<%= file.name %>" data-ref="<%= file._id %>">
-                  <a href="/folder/<%= file._id %>">
-                      <div>
-                          <img src="./images/folder.svg" alt="">
-                          <span>
-                              <%= file.name %>
-                          </span>
-                      </div>
-                  </a>
-              </center>
-              <% } else { %>
-                  <center className="folder-icon" data-name="<%= file.name %>" data-ref="<%= file._id %>">
-                      <a href="#">
-                          <div>
-                              <img style="border: 1px solid rgb(237, 237, 237); border-radius: 4px;"
-                                  src="<%= file.blobUrl %>" alt="">
-                              <span>
-                                  <%= file.name %>
-                              </span>
-                          </div>
-                      </a>
-                  </center> */
-
+    )
+}

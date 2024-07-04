@@ -6,7 +6,7 @@ import SayLogin from "./comps/SayLogin";
 // const folderIcon = process.env.PUBLIC_URL + "../folder.svg";
 // const fileIcon = process.env.PUBLIC_URL + "../logo192.png";
 
-const MyFolder = ({ data }) => {
+const MyNote = ({ data }) => {
     const [name, setName] = useState('');
     const creatNotes = async () => {
         try {
@@ -104,7 +104,7 @@ const MyFolder = ({ data }) => {
             </div>
             <div className="note-container">
                     {(data.struct.map((item) => (
-                        <Link to={"./note/"+item._id} key={item._id} className="note-box">
+                        <div key={item._id} className="note-box">
                             <img className="thumbnail" src={item.image} />
                             <div className="middle">
                                 <center className="view">
@@ -128,7 +128,7 @@ const MyFolder = ({ data }) => {
                                     <img src="../more-three.svg" />
                                 </button>
                             </div>
-                        </Link>
+                        </div>
                     )))}
                 </div>
             </section>):(
@@ -156,7 +156,7 @@ const MyFolder = ({ data }) => {
     );
 };
 
-export default MyFolder;
+export default MyNote;
 
 
 
