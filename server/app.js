@@ -92,7 +92,7 @@ app.post('/otpcheck', async (req, res) => {
         // console.log(otp + user.otp)
         if (otp === user.otp) {
             const token = jwt.sign({ id: user._id.toString(), name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax' });
+            res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax', domain: process.env.COOKIE_DOMAIN});
             res.json({ success: true, message: 'Login successful', token });
         } else {
             return res.status(400).json({ success: false, error: 'Invalid username or password' });
@@ -113,7 +113,7 @@ app.post('/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ success: false, error: 'Invalid username or password' });
         const token = jwt.sign({ id: user._id.toString(), name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax' });
+        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax',domain: process.env.COOKIE_DOMAIN});
         res.json({ success: true, message: 'Login successful', token });
     } catch (error) {
         console.error('Error during login:', error);
@@ -197,20 +197,6 @@ const blobServiceClient1 = new BlobServiceClient(
     `https://${process.env.AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
     sharedKeyCredential1
 );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
 const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;
 const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
@@ -221,7 +207,7 @@ const blobServiceClient = new BlobServiceClient(
     sharedKeyCredential
 );
 
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 500 * 1024 * 1024 } });
 
 app.post('/upload', upload.single('file'), async (req, res) => {
     console.log("hi")

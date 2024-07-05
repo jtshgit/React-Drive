@@ -392,11 +392,11 @@ background-color: #dcdada;
 
 
 /* file-upload */
-/* body{
+body{
   padding: 10px;
   background: #0086fe;
-} */
-/* .upload-box >p{
+} 
+.upload-box >p{
   text-align: center;
   font-weight: 500;
   margin-top: 10px;
@@ -553,4 +553,4 @@ flex-direction: column;
   font-size: 2em;
   color: #fff;
   pointer-events: none;
-} */
+}

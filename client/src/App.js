@@ -30,7 +30,7 @@ function App() {
         {/* <Route path="/signup" element={<Signup />}/> */}
           {/* <Route path="/folder/*" element={<DriveBody />} /> */}
           {/* <Route path="/myfolder/*" element={<MyDrive />} /> */}
-          {/* <Route path="/login" element={<Login />} /> */}
+          <Route path="/sub" element={<Subtract />} />
           <Route path="/note" element={<Notes />} />
           <Route path="/note/*" element={<DriveBody />}/>
         </Routes>

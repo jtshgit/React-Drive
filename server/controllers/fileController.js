@@ -26,12 +26,11 @@ exports.fetchFiles = async (req, res) => {
     const folderFirst = await File.findOne({ _id: note.path });
     
     if(folder){
-        const allfiles = await File.find();
+        const allfiles = await File.find({note: note._id});
         res.json({ found: true, owner: true,success: true,note: folderFirst._id, struct: allfiles, auth: true });
     }else{
     res.json({found: false, success: true });
     }
-
 };
 
 exports.createNote =  async (req, res) => {
