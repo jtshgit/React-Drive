@@ -7,12 +7,15 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const File = require('./model/file');
 const User = require('./model/user');
+const Notes = require('./model/notes');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const nodemailer = require('nodemailer');
 const fileController = require('./controllers/fileController');
 const cors = require('cors');
+const path = require('path');
+const request = require('request');
 
 
 const app = express();
@@ -92,7 +95,7 @@ app.post('/otpcheck', async (req, res) => {
         // console.log(otp + user.otp)
         if (otp === user.otp) {
             const token = jwt.sign({ id: user._id.toString(), name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax', domain: process.env.COOKIE_DOMAIN});
+            res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax', domain: process.env.COOKIE_DOMAIN });
             res.json({ success: true, message: 'Login successful', token });
         } else {
             return res.status(400).json({ success: false, error: 'Invalid username or password' });
@@ -113,7 +116,7 @@ app.post('/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ success: false, error: 'Invalid username or password' });
         const token = jwt.sign({ id: user._id.toString(), name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax',domain: process.env.COOKIE_DOMAIN});
+        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'Lax', domain: process.env.COOKIE_DOMAIN });
         res.json({ success: true, message: 'Login successful', token });
     } catch (error) {
         console.error('Error during login:', error);
@@ -155,7 +158,7 @@ app.post('/sendOtp', async (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-    res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
+    res.cookie('token', '', { domain: process.env.COOKIE_DOMAIN, httpOnly: true, expires: new Date(0) });
     res.json({ success: true, message: 'Logged out' });
 });
 
@@ -178,55 +181,114 @@ app.post('/fetchMyDrive', fileController.getNotes);
 app.post('/createNotes', fileController.createNote);
 app.post('/createfolderinnote', fileController.createFolderInNote);
 app.post('/fetch', fileController.fetchFiles);
+app.get('/proxy', fileController.getFile);
+// app.get('/proxy', (req, res) => {
+//     const url = 'https://givemesomestorage.blob.core.windows.net/thumbnail/Sample-doc-file-500kb.doc';
+//     request(url).pipe(res);
+//   });
+  
+  
 
 
 
 
+const storage = multer.memoryStorage();
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 500 * 1024 * 1024 }, // Limit file size to 500MB
+    fileFilter: (req, file, cb) => {
+        checkFileType(file, cb);
+    }
+}).single('file'); // Adjust this according to the field name in your form
 
+// Check file type
+function checkFileType(file, cb) {
+    // Allowed ext
+    const filetypes = /jpeg|jpg|png|gif|pdf|doc|docx/;
+    // Check ext
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    // Check mime
+    const mimetype = filetypes.test(file.mimetype);
 
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb('Error: Images and documents only!');
+    }
+}
 
+// Upload file to Azure Blob Storage
+const uploadToAzure = async (buffer, blobName, mimeType) => {
+    const sharedKeyCredential = new StorageSharedKeyCredential(
+        process.env.AZURE_STORAGE_ACCOUNT_NAME,
+        process.env.AZURE_STORAGE_ACCOUNT_KEY
+    );
 
+    const blobServiceClient = new BlobServiceClient(
+        `https://${process.env.AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
+        sharedKeyCredential
+    );
 
+    const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_STORAGE_CONTAINER_NAME);
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
+    await blockBlobClient.uploadData(buffer, {
+        blobHTTPHeaders: { blobContentType: mimeType }
+    });
 
+    return blockBlobClient.url;
+};
 
+app.post('/upload', upload, async (req, res) => {
+    const { parentId } = req.body;
+    const token = req.cookies.token;
+    if (token) {
+        try {
+            const verified = jwt.verify(token, process.env.JWT_SECRET);
+            const folder = await File.findOne({ _id: parentId });
 
+            if (folder) {
+                const note = await Notes.findOne({ _id: folder.note });
+                if (note.userId === verified.id) {
+                    if (!req.file) {
+                        res.status(400).json({ error: 'No file selected!' });
+                    } else {
+                        const blobName = req.file.originalname;
+                        const buffer = req.file.buffer;
+                        const mimeType = req.file.mimetype;
+                        const size = req.file.size;
+                        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                        const ext = path.extname(blobName);
+                        const uniqueFileName = uniqueSuffix+ext;
 
-const sharedKeyCredential1 = new StorageSharedKeyCredential(process.env.AZURE_STORAGE_ACCOUNT_NAME, process.env.AZURE_STORAGE_ACCOUNT_KEY);
-const blobServiceClient1 = new BlobServiceClient(
-    `https://${process.env.AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
-    sharedKeyCredential1
-);
-const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
-const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;
-const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
-
-const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
-const blobServiceClient = new BlobServiceClient(
-    `https://${accountName}.blob.core.windows.net`,
-    sharedKeyCredential
-);
-
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 500 * 1024 * 1024 } });
-
-app.post('/upload', upload.single('file'), async (req, res) => {
-    console.log("hi")
-    try {
-        const blobName = req.file.originalname;
-        const containerClient = blobServiceClient.getContainerClient(containerName);
-        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-        const stream = req.file.buffer;
-        const streamLength = req.file.size;
-
-        await blockBlobClient.upload(stream, streamLength, {
-            onProgress: (progress) => {
-                console.log(`Uploaded ${progress.loadedBytes} of ${streamLength} bytes`);
+                        try {
+                            await uploadToAzure(buffer, uniqueFileName, mimeType);
+                            const file = new File({
+                                name: blobName,
+                                type: "file",
+                                path: uniqueFileName,
+                                note: folder.note,
+                                parent: parentId
+                            });
+                            await file.save();
+                            res.json({
+                                success: true, file: file
+                            });
+                        } catch (error) {
+                            res.status(500).json({ error: 'Error uploading file to Azure Blob Storage', details: error.message });
+                        }
+                    }
+                } else {
+                    res.status(400).json({ error: "unauthorised" });
+                }
+            } else {
+                res.status(400).json({ error: "unauthorised" });
             }
-        });
-        res.status(200).json({ message: 'File uploaded successfully.', url: blockBlobClient.url });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        } catch (error) {
+            res.status(400).json({ error: "unauthorised" });
+        }
+    } else {
+        res.status(400).json({ error: "unauthorised" });
     }
 });
 

@@ -14,9 +14,7 @@ export default function DriveBody() {
   const [loading, setLoading] = useState(true);
   const handleAddition = async () => {
     try {
-      const response = await axios.post(process.env.REACT_APP_API_URL+"/fetch", {
-        parent: id,
-      });
+      const response = await axios.post(process.env.REACT_APP_API_URL+"/fetch", {parent: id}, { withCredentials: true });
       if (response.data.success) {
         setData(response.data);
       }
@@ -26,6 +24,13 @@ export default function DriveBody() {
       setLoading(false);
     }
   };
+  const updateData = (newItem) => {
+    setData(prevData => ({
+      ...prevData,
+      struct: [...prevData.struct, newItem]
+    }));
+  };
+
 
   useEffect(() => {
     handleAddition();
@@ -34,6 +39,7 @@ export default function DriveBody() {
   return (
     
     <div style={{ display: "flex", height: "calc(100vh - 4rem)" }}>
+
       {window.innerWidth > 768?  (<div
         style={{
           width: "20%",
@@ -63,9 +69,9 @@ export default function DriveBody() {
           <p>loading...</p>
         ) : (
           <Routes>
-            <Route path="/:id" element={<Folder data={data} />} />
-            <Route path="/" element={<Folder data={data} />} />
-          </Routes>
+          <Route path="/:id" element={<Folder data={data} updateData={updateData} />} />
+          <Route path="/" element={<Folder data={data} updateData={updateData} />} />
+        </Routes>
         )}
       </div>
     </div>

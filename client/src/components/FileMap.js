@@ -15,7 +15,7 @@ const Accordion = ({ items, parentId }) => {
         <div key={item._id} className="accordion-item">
           <h2 className="accordion-header" id={`heading${item._id}`}>
           <Link
-          to={`/folder/${item._id}`}
+          to={`/note/${item._id}`}
           className={`accordion-button ${
             item.type === "file"
               ? "collapsed accordion-file-button"

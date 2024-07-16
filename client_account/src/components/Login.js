@@ -35,7 +35,7 @@ function Login() {
               );
               if(response.data.success){
                 setTimeout(() => {
-                    window.location.href = process.env.REACT_APP_WEB_URL;
+                    window.location.href = process.env.REACT_APP_PUBLIC_URL;
                 }, 500);
               }
             //   console.log(response.data);

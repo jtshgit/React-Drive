@@ -366,12 +366,31 @@ background-color: #dcdada;
 
 
 
+.react-pdf__Page__canvas{
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  /* border-radius: 10px;
+  overflow: hidden; */
+}
+.react-pdf__Document{
+  background-color: #f4f4f4;
+  padding: 20px 0;overflow: auto;
+}
 
+.react-pdf__Page{
+  background-color: transparent !important;
+}
 
+.controls{
+  position: fixed;
+    bottom: 10px;
+    z-index: 10;
+    left: 50%;
 
-
-
-
+}
+.pdf-pages{
+  height: calc(100vh - 135px);
+  overflow: auto;
+}
 
 
 
@@ -392,7 +411,7 @@ background-color: #dcdada;
 
 
 /* file-upload */
-body{
+/* body{
   padding: 10px;
   background: #0086fe;
 } 
@@ -553,4 +572,4 @@ flex-direction: column;
   font-size: 2em;
   color: #fff;
   pointer-events: none;
-}
+} */
